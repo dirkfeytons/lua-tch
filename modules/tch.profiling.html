@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Technicolor Lua Modules Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-tch</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
+  <li><a href="../modules/tch.posix.html">tch.posix</a></li>
+  <li><strong>tch.profiling</strong></li>
+  <li><a href="../modules/tch.socket.evloop.html">tch.socket.evloop</a></li>
+  <li><a href="../modules/tch.socket.unix.html">tch.socket.unix</a></li>
+  <li><a href="../modules/tch.tableprint.html">tch.tableprint</a></li>
+  <li><a href="../modules/tch.timerfd.html">tch.timerfd</a></li>
+  <li><a href="../modules/tch.uuid.html">tch.uuid</a></li>
+  <li><a href="../modules/tch.xpcall.html">tch.xpcall</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tch.profiling</code></h1>
+<p>A simple profiling module.</p>
+<p> Every time <code>start()</code> is called it will record a timestamp on a stack.
+ Every time <code>stop()</code> is called it will calculate the elapsed time with
+ the timestamp currently on the top of the stack. This info is used
+ to build a call tree with timings. Note that this means you have
+ to use the functions in a balanced way.</p>
+
+<p> <strong>This is an internal development module and normally not installed
+ on target.</strong></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local profiling = require(&quot;tch.profiling&quot;)
+local function some_time_consuming_function()
+  profiling.start(&quot;some_time_consuming_function&quot;)
+  calculations here
+  profiling.stop(&quot;some_time_consuming_function&quot;)
+end
+local function foo()
+  profiling.start(&quot;foo&quot;)
+  some_time_consuming_function()
+  some_other_time_consuming_function()
+  profiling.stop(&quot;foo&quot;)
+  profiling.dump(&quot;/tmp/profile.log&quot;)
+end
+</pre>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#dump">dump(filename, append)</a></td>
+	<td class="summary">Write the collected profiling data to the given file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#start">start(name)</a></td>
+	<td class="summary">Record a starting timestamp with the given name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stop">stop(name)</a></td>
+	<td class="summary">Take a new timestamp, calculate the elapsed time since the
+ timestamp at the top of the stack and record it with the given name.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "dump"></a>
+    <strong>dump(filename, append)</strong>
+    </dt>
+    <dd>
+    Write the collected profiling data to the given file.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The full path to the file to write the data to.
+        </li>
+        <li><span class="parameter">append</span>
+            <span class="types"><span class="type">bool</span></span>
+         Whether to append to the given filename or overwrite it.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/tch.profiling.html#start">start</a></li>
+         <li><a href="../modules/tch.profiling.html#stop">stop</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "start"></a>
+    <strong>start(name)</strong>
+    </dt>
+    <dd>
+    Record a starting timestamp with the given name.
+ You can nest calls to this function. The recorded timestamps
+ are organized in a stack.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         A description for the timestamp.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/tch.profiling.html#stop">stop</a></li>
+         <li><a href="../modules/tch.profiling.html#dump">dump</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "stop"></a>
+    <strong>stop(name)</strong>
+    </dt>
+    <dd>
+    Take a new timestamp, calculate the elapsed time since the
+ timestamp at the top of the stack and record it with the given name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         A description for the elapsed time. It doesn't have to
+   be the same name as in the <code>start()</code> call but it might help
+   help to interpret the results.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/tch.profiling.html#start">start</a></li>
+         <li><a href="../modules/tch.profiling.html#dump">dump</a></li>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
+<i style="float:right;">Last updated 2016-10-27 16:24:06 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

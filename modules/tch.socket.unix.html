@@ -1,0 +1,641 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Technicolor Lua Modules Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-tch</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_sk">Class sk </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
+  <li><a href="../modules/tch.posix.html">tch.posix</a></li>
+  <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
+  <li><a href="../modules/tch.socket.evloop.html">tch.socket.evloop</a></li>
+  <li><strong>tch.socket.unix</strong></li>
+  <li><a href="../modules/tch.tableprint.html">tch.tableprint</a></li>
+  <li><a href="../modules/tch.timerfd.html">tch.timerfd</a></li>
+  <li><a href="../modules/tch.uuid.html">tch.uuid</a></li>
+  <li><a href="../modules/tch.xpcall.html">tch.xpcall</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tch.socket.unix</code></h1>
+<p>Lua C module exposing Unix domain sockets.</p>
+<p> Currently implemented:</p>
+
+<ul>
+    <li>Datagram and stream sockets.</li>
+    <li>The sockets are created with <code>SO_PASSCRED</code> option.</li>
+    <li>All addresses are in the abstract namespace but the leading <code>\0</code> will
+    be added automatically.</li>
+    <li>Maximum size of datagrams is <code>MAX_DGRAM_SIZE</code> bytes.</li>
+</ul>
+
+<p> See <a href="http://linux.die.net/man/7/unix">unix(7)</a> for more information on Unix domain sockets.</p>
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/7/unix">unix(7)</a>
+    </ul>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">Example server code:
+  local unix = require(&quot;tch.socket.unix&quot;)
+  local sk = unix.dgram()
+  assert(sk:bind(&quot;myserveraddress&quot;))
+  while true do
+    local data, from = sk:recvfrom()
+    // process data and formulate response
+    local response = process(data)
+    sk:sendto(response, from)
+  end
+  sk:close()
+
+Example client code:
+  local unix = require(&quot;tch.socket.unix&quot;)
+  local sk = unix.dgram()
+  assert(sk:connect(&quot;myserveraddress))
+  local data = produce()
+  sk:send(data)
+  local response = sk:recv()
+  process(response)
+  sk:close()
+</pre>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#dgram">dgram(flags)</a></td>
+	<td class="summary">Create a new datagram socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stream">stream(flags)</a></td>
+	<td class="summary">Create a new stream socket.</td>
+	</tr>
+</table>
+<h2><a href="#Class_sk">Class sk </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#sk:accept">sk:accept(flags)</a></td>
+	<td class="summary">Accept a new connection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:bind">sk:bind(path)</a></td>
+	<td class="summary">Bind the socket to the given path in the abstract namespace.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:close">sk:close()</a></td>
+	<td class="summary">Close the socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:connect">sk:connect(path)</a></td>
+	<td class="summary">Connect the socket to the given path in the abstract namespace.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:fd">sk:fd()</a></td>
+	<td class="summary">Return the underlying file descriptor of this socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:listen">sk:listen()</a></td>
+	<td class="summary">Mark the socket as a listening socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:recv">sk:recv()</a></td>
+	<td class="summary">Receive data from the socket.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:recvfrom">sk:recvfrom()</a></td>
+	<td class="summary">Receive data from the socket and the address of the sender.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:send">sk:send(data)</a></td>
+	<td class="summary">Send the given data to the peer to which the socket is connected.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sk:sendto">sk:sendto(data, path)</a></td>
+	<td class="summary">Send the given data to the given path in the abstract namespace.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tch.socket.unix">tch.socket.unix</a></td>
+	<td class="summary">Useful constants.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "dgram"></a>
+    <strong>dgram(flags)</strong>
+    </dt>
+    <dd>
+    Create a new datagram socket. </p>
+
+<p> The <code>SO_PASSCRED</code> socket option is always set.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flags</span>
+            <span class="types"><span class="type">int</span></span>
+         Bitwise OR of the <code>SOCK_*</code> constants.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/tch.socket.unix.html#sk">sk</a></span>
+        The newly created datagram socket.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "stream"></a>
+    <strong>stream(flags)</strong>
+    </dt>
+    <dd>
+    Create a new stream socket. </p>
+
+<p> The <code>SO_PASSCRED</code> socket option is always set.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flags</span>
+            <span class="types"><span class="type">int</span></span>
+         Bitwise OR of the <code>SOCK_*</code> constants.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/tch.socket.unix.html#sk">sk</a></span>
+        The newly created stream socket.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_sk"></a>Class sk </h2>
+
+          <div class="section-description">
+          Unixsocket methods.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "sk:accept"></a>
+    <strong>sk:accept(flags)</strong>
+    </dt>
+    <dd>
+    Accept a new connection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flags</span>
+            <span class="types"><span class="type">int</span></span>
+         Bitwise OR of the <code>SOCK_*</code> constants.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/tch.socket.unix.html#sk">sk</a></span>
+        New socket representing the accepted connection.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message. In particular, if the socket is marked non-blocking
+   and the operation would block then the message <code>&quot;WOULDBLOCK&quot;</code> is returned.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:bind"></a>
+    <strong>sk:bind(path)</strong>
+    </dt>
+    <dd>
+    Bind the socket to the given path in the abstract namespace.
+ The leading <code>\0</code> will be added automatically.
+ Can only be done once and before any data is sent.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path in the abstract namespace to bind to.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:close"></a>
+    <strong>sk:close()</strong>
+    </dt>
+    <dd>
+    Close the socket. </p>
+
+<p> Calling socket methods on the closed socket will result in errors.
+ It's not an error to close a socket more than once.
+ Closing a socket will automatically remove it from any event loop
+ it was added to but not removed yet.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:connect"></a>
+    <strong>sk:connect(path)</strong>
+    </dt>
+    <dd>
+    Connect the socket to the given path in the abstract namespace.
+ The leading <code>\0</code> will be added automatically.
+ Can be called multiple times.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path in the abstract namespace to connect to.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:fd"></a>
+    <strong>sk:fd()</strong>
+    </dt>
+    <dd>
+    Return the underlying file descriptor of this socket.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        The file descriptor.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:listen"></a>
+    <strong>sk:listen()</strong>
+    </dt>
+    <dd>
+    Mark the socket as a listening socket.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean <code>true</code>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:recv"></a>
+    <strong>sk:recv()</strong>
+    </dt>
+    <dd>
+    Receive data from the socket.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The data read from the socket.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message. In particular, if the socket is marked non-blocking
+   and the operation would block then the message <code>&quot;WOULDBLOCK&quot;</code> is returned.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:recvfrom"></a>
+    <strong>sk:recvfrom()</strong>
+    </dt>
+    <dd>
+    Receive data from the socket and the address of the sender.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The data read from the socket.</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path in the abstract namespace (without leading <code>\0</code>)
+   of the sender. Note that this can be an empty string if the sender
+   didn't bind its socket and the kernel didn't automatically generate
+   an address (like it does when e.g. the <code>SO_PASSCRED</code> option is set).</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message. In particular, if the socket is marked non-blocking
+   and the operation would block then the message <code>&quot;WOULDBLOCK&quot;</code> is returned.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:send"></a>
+    <strong>sk:send(data)</strong>
+    </dt>
+    <dd>
+    Send the given data to the peer to which the socket is connected.
+ This means <a href="../modules/tch.socket.unix.html#sk:connect">sk:connect</a> must have been called first.
+ The data can be provided as a string or as an array of strings.
+ If the total size of the data is more than <code>MAX_DGRAM_SIZE</code> an
+ error will be returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">{string,...}</a></span>
+         The data to send.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message. In particular, if the socket is marked non-blocking
+   and the operation would block then the message <code>&quot;WOULDBLOCK&quot;</code> is returned.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sk:sendto"></a>
+    <strong>sk:sendto(data, path)</strong>
+    </dt>
+    <dd>
+    Send the given data to the given path in the abstract namespace.
+ The leading <code>\0</code> will be added automatically.
+ The data can be provided as a string or as an array of strings.
+ If the total size of the data is more than <code>MAX_DGRAM_SIZE</code> an
+ error will be returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> or <a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">{string,...}</a></span>
+         The data to send.
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The path in the abstract namespace to send the data to.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        <code>true</code>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message. In particular, if the socket is marked non-blocking
+   and the operation would block then the message <code>&quot;WOULDBLOCK&quot;</code> is returned.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tch.socket.unix"></a>
+    <strong>tch.socket.unix</strong>
+    </dt>
+    <dd>
+    Useful constants.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">MAX_DGRAM_SIZE</span>
+         The maximum size of a datagram, in bytes.
+        </li>
+        <li><span class="parameter">SOCK_CLOEXEC</span>
+         Option to close the socket across <code>execve()</code>.
+        </li>
+        <li><span class="parameter">SOCK_NONBLOCK</span>
+         Option to make the socket non-blocking when invoking <a href="../modules/tch.socket.unix.html#dgram">dgram</a> or <a href="../modules/tch.socket.unix.html#stream">stream</a>.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
+<i style="float:right;">Last updated 2016-10-27 16:24:06 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

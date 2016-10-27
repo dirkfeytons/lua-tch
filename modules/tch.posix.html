@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Technicolor Lua Modules Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-tch</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
+  <li><strong>tch.posix</strong></li>
+  <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
+  <li><a href="../modules/tch.socket.evloop.html">tch.socket.evloop</a></li>
+  <li><a href="../modules/tch.socket.unix.html">tch.socket.unix</a></li>
+  <li><a href="../modules/tch.tableprint.html">tch.tableprint</a></li>
+  <li><a href="../modules/tch.timerfd.html">tch.timerfd</a></li>
+  <li><a href="../modules/tch.uuid.html">tch.uuid</a></li>
+  <li><a href="../modules/tch.xpcall.html">tch.xpcall</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tch.posix</code></h1>
+<p>Bindings to POSIX functions and useful wrappers around them.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#clock_elapsed">clock_elapsed(clk_id, sec[, nsec])</a></td>
+	<td class="summary">Calculate the elapsed time since the given timestamp.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_gettime">clock_gettime(clk_id)</a></td>
+	<td class="summary">Retrieve time using the given clock ID.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dup2">dup2(oldfd, newfd)</a></td>
+	<td class="summary">Duplicates the old file descriptor into the new file descriptor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#execv">execv(path[, argv])</a></td>
+	<td class="summary">Replace the current process image with a new process image.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fork">fork()</a></td>
+	<td class="summary">Create a new process by duplicating the calling process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getpid">getpid()</a></td>
+	<td class="summary">Get the process ID of the calling process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getusername">getusername()</a></td>
+	<td class="summary">Get username of user running the calling process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#inet_pton">inet_pton(af, src)</a></td>
+	<td class="summary">convert IP address to binary form</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#kill">kill(pid, sig)</a></td>
+	<td class="summary">Send signal to a process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#statvfs">statvfs(path)</a></td>
+	<td class="summary">Retrieve statistics of the mounted file system on which the given path resides.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sysconf">sysconf(int)</a></td>
+	<td class="summary">Get configuration information at runtime.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#tch.posix">tch.posix</a></td>
+	<td class="summary">Constants to be used in calls to functions of this module.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "clock_elapsed"></a>
+    <strong>clock_elapsed(clk_id, sec[, nsec])</strong>
+    </dt>
+    <dd>
+    Calculate the elapsed time since the given timestamp.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">clk_id</span>
+         Clock ID, one of the <code>CLOCK_*</code> constants. It's your
+   responsibility to pass the same clock ID as used to generate the
+   initial timestamp.
+        </li>
+        <li><span class="parameter">sec</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of seconds of the initial timestamp.
+        </li>
+        <li><span class="parameter">nsec</span>
+            <span class="types"><span class="type">number</span></span>
+         The number of nanoseconds of the initial timestamp.
+   If absent then elapsed time will be calculated based on the seconds
+   part only.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        The number of microseconds elapsed between the initial
+   timestamp and now.
+    </ol>
+
+    <h3>Raises:</h3>
+    Throws in case of an invalid clock ID or <code>sec</code>/<code>nsec</code> not
+   being numbers.
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/tch.posix.html#clock_gettime">clock_gettime</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "clock_gettime"></a>
+    <strong>clock_gettime(clk_id)</strong>
+    </dt>
+    <dd>
+    Retrieve time using the given clock ID.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">clk_id</span>
+         Clock ID, one of the <code>CLOCK_*</code> constants.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        The number of seconds on the clock.</li>
+        <li>
+           <span class="types"><span class="type">number</span></span>
+        The number of nanoseconds on the clock.</li>
+    </ol>
+
+    <h3>Raises:</h3>
+    Throws in case of an invalid clock ID.
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/tch.posix.html#clock_elapsed">clock_elapsed</a></li>
+         <li><a href="http://linux.die.net/man/2/clock_gettime">clock_gettime(2)</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "dup2"></a>
+    <strong>dup2(oldfd, newfd)</strong>
+    </dt>
+    <dd>
+    Duplicates the old file descriptor into the new file descriptor.
+ The new file descriptor is closed first if necessary.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">oldfd</span>
+            <span class="types"><span class="type">int</span></span>
+         The file descriptor to duplicate.
+        </li>
+        <li><span class="parameter">newfd</span>
+            <span class="types"><span class="type">int</span></span>
+         The file descriptor to duplicate to.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        The new file descriptor.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/2/dup2">dup2(2)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "execv"></a>
+    <strong>execv(path[, argv])</strong>
+    </dt>
+    <dd>
+    Replace the current process image with a new process image.
+ This function only returns if an error occurred.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The file to be executed.
+        </li>
+        <li><span class="parameter">argv</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">{string,...}</a></span>
+         Array with the arguments to provide to the new program.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="http://linux.die.net/man/3/execv">execv(3)</a></li>
+         <li><a href="http://linux.die.net/man/2/execve">execve(2)</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "fork"></a>
+    <strong>fork()</strong>
+    </dt>
+    <dd>
+    Create a new process by duplicating the calling process.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        The PID of the child process is returned in the parent, and
+   0 is returned in the child.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/2/fork">fork(2)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "getpid"></a>
+    <strong>getpid()</strong>
+    </dt>
+    <dd>
+    Get the process ID of the calling process.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        The process ID of the calling process.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/2/getpid">getpid(2)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "getusername"></a>
+    <strong>getusername()</strong>
+    </dt>
+    <dd>
+    Get username of user running the calling process.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        The username of the user running the calling process.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="http://linux.die.net/man/2/getuid">getuid(2)</a></li>
+         <li><a href="http://linux.die.net/man/3/getpwnam">getpwnam(3)</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "inet_pton"></a>
+    <strong>inet_pton(af, src)</strong>
+    </dt>
+    <dd>
+    convert IP address to binary form
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">af</span>
+            <span class="types"><span class="type">int</span></span>
+         The address family, either AF<em>INET or AF</em>INET6
+        </li>
+        <li><span class="parameter">src</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The IP address string to convert
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the binary representation of the given address
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        error message</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/3/inet_pton">inet_pton(3)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "kill"></a>
+    <strong>kill(pid, sig)</strong>
+    </dt>
+    <dd>
+    Send signal to a process.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">int</span></span>
+         The process ID of the process to send signal to.
+        </li>
+        <li><span class="parameter">sig</span>
+            <span class="types"><span class="type">int</span></span>
+         The signal to send to process: SIGTERM, SIGKILL or 0 to check if process exists.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+        The return value of kill() or nil otherwise.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/2/kill">kill(2)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "statvfs"></a>
+    <strong>statvfs(path)</strong>
+    </dt>
+    <dd>
+    Retrieve statistics of the mounted file system on which the given path resides.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         A pathname whose underlying filesystem the statistics will be retrieved from.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        All the fields of the <code>struct statvfs</code> are the keys; the values are numbers.
+    </ol>
+
+    <h3>Raises:</h3>
+    Throws in case of an invalid path.
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/2/statvfs">statvfs(2)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "sysconf"></a>
+    <strong>sysconf(int)</strong>
+    </dt>
+    <dd>
+    Get configuration information at runtime.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">int</span>
+         any valid sysconf value is accepted but only <em>SC</em>CLK_TCK is exported by the module.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        associated system configuration value
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/3/sysconf">sysconf(3)</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "tch.posix"></a>
+    <strong>tch.posix</strong>
+    </dt>
+    <dd>
+    Constants to be used in calls to functions of this module.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">CLOCK_REALTIME</span>
+         Realtime clock ID for use in <a href="../modules/tch.posix.html#clock_gettime">clock_gettime</a> and <a href="../modules/tch.posix.html#clock_elapsed">clock_elapsed</a>.
+        </li>
+        <li><span class="parameter">CLOCK_MONOTONIC</span>
+         Monotonic clock ID for use in <a href="../modules/tch.posix.html#clock_gettime">clock_gettime</a> and <a href="../modules/tch.posix.html#clock_elapsed">clock_elapsed</a>.
+        </li>
+        <li><span class="parameter">ST_RDONLY</span>
+         Bit in the <code>f_flag</code> field of the table returned by <a href="../modules/tch.posix.html#statvfs">statvfs</a> indicating a read-only filesystem.
+        </li>
+        <li><span class="parameter">ST_NOSUID</span>
+         Bit in the <code>f_flag</code> field of the table returned by <a href="../modules/tch.posix.html#statvfs">statvfs</a> indicating set-user-ID and set-group-ID bits are ignored by <a href="http://linux.die.net/man/3/exec">exec(3)</a>.
+        </li>
+        <li><span class="parameter">SIGKILL</span>
+         Using <a href="../modules/tch.posix.html#kill">kill</a>, send signal '9' to process. This is equivalent to shell command 'kill -9'.
+        </li>
+        <li><span class="parameter">SIGTERM</span>
+         Using <a href="../modules/tch.posix.html#kill">kill</a>, send signal '15' to process. This is equivalent to shell command <a href="../modules/tch.posix.html#kill">kill</a>, since SIGTERM is the default signal.
+        </li>
+        <li><span class="parameter">AF_INET</span>
+         IPv4 address family
+        </li>
+        <li><span class="parameter">Af_INET6</span>
+         IPv6 address family
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
+<i style="float:right;">Last updated 2016-10-27 16:24:06 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

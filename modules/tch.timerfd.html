@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Technicolor Lua Modules Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-tch</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
+  <li><a href="../modules/tch.posix.html">tch.posix</a></li>
+  <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
+  <li><a href="../modules/tch.socket.evloop.html">tch.socket.evloop</a></li>
+  <li><a href="../modules/tch.socket.unix.html">tch.socket.unix</a></li>
+  <li><a href="../modules/tch.tableprint.html">tch.tableprint</a></li>
+  <li><strong>tch.timerfd</strong></li>
+  <li><a href="../modules/tch.uuid.html">tch.uuid</a></li>
+  <li><a href="../modules/tch.xpcall.html">tch.xpcall</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tch.timerfd</code></h1>
+<p>Lua C module exposing timers that notify via file descriptors.</p>
+<p> See <a href="http://linux.die.net/man/2/timerfd_create">timerfd_create(2)</a> for more information on timers that notify via file descriptors.</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#close">close(fd)</a></td>
+	<td class="summary">Close the underlying file descriptor of a timer_fd.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#create">create()</a></td>
+	<td class="summary">Create a new timer_fd.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fd">fd(timer_fd)</a></td>
+	<td class="summary">Return the underlying file descriptor of a timer_fd.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#read">read(fd)</a></td>
+	<td class="summary">Read from the underlying file descriptor of a timer_fd.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#settime">settime(timer_fd, secs)</a></td>
+	<td class="summary">Set the timing behaviour on a given timer_fd.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "close"></a>
+    <strong>close(fd)</strong>
+    </dt>
+    <dd>
+    Close the underlying file descriptor of a timer_fd.  By closing the
+ underlying file descriptor, the timer should be disarmed and its
+ resources freed by the kernel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fd</span>
+         An underlying file descriptor of a timer_fd.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "create"></a>
+    <strong>create()</strong>
+    </dt>
+    <dd>
+    Create a new timer_fd.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">timer_fd</span></span>
+        The new timer_fd.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "fd"></a>
+    <strong>fd(timer_fd)</strong>
+    </dt>
+    <dd>
+    Return the underlying file descriptor of a timer_fd.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timer_fd</span>
+         A timer_fd struct.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        The file descriptor.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "read"></a>
+    <strong>read(fd)</strong>
+    </dt>
+    <dd>
+    Read from the underlying file descriptor of a timer_fd.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fd</span>
+         An underlying file descriptor of a timer_fd.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        How many times the timer has fired since the last time we've read from it.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "settime"></a>
+    <strong>settime(timer_fd, secs)</strong>
+    </dt>
+    <dd>
+    Set the timing behaviour on a given timer_fd.  Both the interval
+ and the first deadline are set to the given value, effectively creating
+ a periodic timer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timer_fd</span>
+         A timer_fd struct.
+        </li>
+        <li><span class="parameter">secs</span>
+         How many seconds the timer should use.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
+<i style="float:right;">Last updated 2016-10-27 16:24:06 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

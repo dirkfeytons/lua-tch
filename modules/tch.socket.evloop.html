@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Technicolor Lua Modules Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-tch</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_evloop">Class evloop </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
+  <li><a href="../modules/tch.posix.html">tch.posix</a></li>
+  <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
+  <li><strong>tch.socket.evloop</strong></li>
+  <li><a href="../modules/tch.socket.unix.html">tch.socket.unix</a></li>
+  <li><a href="../modules/tch.tableprint.html">tch.tableprint</a></li>
+  <li><a href="../modules/tch.timerfd.html">tch.timerfd</a></li>
+  <li><a href="../modules/tch.uuid.html">tch.uuid</a></li>
+  <li><a href="../modules/tch.xpcall.html">tch.xpcall</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tch.socket.evloop</code></h1>
+<p>Lua C module exposing event loops.</p>
+<p> See <a href="http://linux.die.net/man/7/epoll">epoll(7)</a> for more information on event loops.</p>
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/tch.socket.unix.html#">tch.socket.unix</a>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#evloop">evloop()</a></td>
+	<td class="summary">Create a new event loop.</td>
+	</tr>
+</table>
+<h2><a href="#Class_evloop">Class evloop </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#evloop:add">evloop:add(sk[, read_cb[, write_cb]])</a></td>
+	<td class="summary">Add a socket to this event loop with the given callback(s).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#evloop:close">evloop:close()</a></td>
+	<td class="summary">Close this event loop.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#evloop:fd">evloop:fd()</a></td>
+	<td class="summary">Return the underlying file descriptor of this event loop.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#evloop:remove">evloop:remove(sk)</a></td>
+	<td class="summary">Remove the given socket or raw file descriptor from
+ this event loop.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#evloop:run">evloop:run()</a></td>
+	<td class="summary">Run this event loop.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "evloop"></a>
+    <strong>evloop()</strong>
+    </dt>
+    <dd>
+    Create a new event loop.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/tch.socket.evloop.html#evloop">evloop</a></span>
+        The newly created event loop.
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/tch.socket.evloop.html#evloop:close">evloop:close</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_evloop"></a>Class evloop </h2>
+
+          <div class="section-description">
+          Event loop methods.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "evloop:add"></a>
+    <strong>evloop:add(sk[, read_cb[, write_cb]])</strong>
+    </dt>
+    <dd>
+    Add a socket to this event loop with the given callback(s). </p>
+
+<p> Based on which callbacks are provided the socket will be
+ monitored for the corresponding event type.
+ At least one callback must be provided.
+ Adding an already added socket is currently not supported.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sk</span>
+            <span class="types"><span class="type">sk</span> or <span class="type">int</span></span>
+         The socket or raw file descriptor to add
+   to the event loop.
+        </li>
+        <li><span class="parameter">read_cb</span>
+            <span class="types"><span class="type">func</span></span>
+         Callback function that will be called when
+   the socket has data ready to be read. The callback will be
+   called with two arguments: the event loop object and the
+   socket object or raw file descriptor.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">write_cb</span>
+            <span class="types"><span class="type">func</span></span>
+         Callback function that will be called when
+   the socket is ready to send more data. The callback will be
+   called with two arguments: the event loop object and the
+   socket object or raw file descriptor.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "evloop:close"></a>
+    <strong>evloop:close()</strong>
+    </dt>
+    <dd>
+    Close this event loop. </p>
+
+<p> Calling other methods on a closed event loop will result in errors.
+ It's not an error to close an event loop more than once.
+ Closing the event loop from one of your event callbacks will cause
+ <code>Evloop:run</code> to return.
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/tch.socket.evloop.html#evloop:run">evloop:run</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "evloop:fd"></a>
+    <strong>evloop:fd()</strong>
+    </dt>
+    <dd>
+    Return the underlying file descriptor of this event loop.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        The file descriptor.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "evloop:remove"></a>
+    <strong>evloop:remove(sk)</strong>
+    </dt>
+    <dd>
+    Remove the given socket or raw file descriptor from
+ this event loop. </p>
+
+<p> Trying to remove a socket that is not in this event loop
+ will currently result in an error. However, removing a
+ closed socket from this event loop will always succeed.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sk</span>
+            <span class="types"><span class="type">sk</span> or <span class="type">int</span></span>
+         The socket or raw file descriptor to
+   remove from the event loop.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "evloop:run"></a>
+    <strong>evloop:run()</strong>
+    </dt>
+    <dd>
+    Run this event loop. </p>
+
+<p> Once started it will wait for events on the sockets added to this
+ event loop and invoke the appropriate callback functions.
+ Running an empty event loop will return immediately with no error.
+ To break out of the event loop one of the callback functions must
+ call <a href="../modules/tch.socket.evloop.html#evloop:close">evloop:close</a>.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Error message.</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/tch.socket.evloop.html#evloop:close">evloop:close</a>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
+<i style="float:right;">Last updated 2016-10-27 16:24:06 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
