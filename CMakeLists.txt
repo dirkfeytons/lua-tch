@@ -15,6 +15,7 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
 
 set(SOURCES
   src/C/crypto.c
+  src/C/crypto_x509.c
   src/C/posix.c
   src/C/uuid.c
   src/C/xpcall.c
