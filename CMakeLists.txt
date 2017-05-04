@@ -54,5 +54,5 @@ set_target_properties(lua-tch PROPERTIES
 
 install(TARGETS lua-tch
         LIBRARY DESTINATION lib/lua)
-install(FILES src/Lua/tableprint.lua src/Lua/inet.lua
+install(FILES src/Lua/tableprint.lua src/Lua/inet.lua src/Lua/logger.lua
         DESTINATION lib/lua/tch)
