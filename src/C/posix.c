@@ -27,6 +27,8 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <pwd.h>
+#include <syslog.h>
+#include <stdio.h>
 #include "common.h"
 
 /**
@@ -96,17 +98,17 @@ static int l_clock_elapsed(lua_State *L)
 /***
  * Get configuration information at runtime.
  * @function sysconf
- * @param int any valid sysconf value is accepted but only _SC_CLK_TCK is exported by the module.
- * @treturn int associated system configuration value
+ * @param int Any valid sysconf value is accepted but only `_SC_CLK_TCK` is exported by the module.
+ * @treturn int Associated system configuration value.
  * @see sysconf(3)
 */
 static int l_sysconf(lua_State *L)
 {
-   lua_Integer d = lua_tointeger(L, 1);
-   if (d == 0 && !lua_isinteger(L, 1))
-     luaL_error(L, "%s: %s", "sysconf", strerror(errno));
-   lua_pushinteger(L, sysconf(d));
-   return 1;
+  lua_Integer d = lua_tointeger(L, 1);
+  if (d == 0 && !lua_isinteger(L, 1))
+    luaL_error(L, "%s: %s", "sysconf", strerror(errno));
+  lua_pushinteger(L, sysconf(d));
+  return 1;
 }
 
 /**
@@ -322,8 +324,8 @@ static int l_dup2(lua_State *L)
  *
  * @function kill
  * @tparam int pid The process ID of the process to send signal to.
- * @tparam int sig The signal to send to process: SIGTERM, SIGKILL or 0 to check if process exists.
- * @treturn number The return value of kill() or nil otherwise.
+ * @tparam int sig The signal to send to process: `SIGTERM`, `SIGKILL` or '0' to check if process exists.
+ * @treturn number The return value of `kill()` or nil otherwise.
  * @error Error message.
  * @see kill(2)
  */
@@ -377,10 +379,10 @@ static int push_error(lua_State *L, const char *msg)
  * convert IP address to binary form
  *
  * @function inet_pton
- * @tparam int af The address family, either AF_INET or AF_INET6
- * @tparam string src The IP address string to convert
- * @treturn string the binary representation of the given address
- * @error error message
+ * @tparam int af The address family, either `AF_INET` or `AF_INET6`.
+ * @tparam string src The IP address string to convert.
+ * @treturn string The binary representation of the given address.
+ * @error Error message.
  * @see inet_pton(3)
  */
 static int l_inet_pton(lua_State *L)
@@ -413,6 +415,62 @@ static int l_inet_pton(lua_State *L)
   }
 }
 
+/**
+ * Open a connection to the system logger for a program.
+ *
+ * @function openlog
+ * @tparam string ident Represent the program name.
+ * @tparam int option Bitwise OR of the applicable `LOG_*` constants to control the operation of this function and subsequent calls to `syslog`.
+ * @tparam int facility One of the applicable `LOG_*` constants which will be the default facility when none is specified in subsequent calls to `syslog`.
+ * @see openlog(3)
+ */
+static int l_openlog(lua_State *L)
+{
+  size_t len;
+  const char *ident = luaL_checklstring(L, 1, &len);
+
+  int option = luaL_checkint(L, 2);
+  int facility = luaL_checkint(L, 3);
+
+  char *identcp = lua_newuserdata(L, len + 1);
+  strcpy(identcp, ident);
+  // store it in our environment table, so that it is not garbage collected
+  lua_setfield(L, LUA_ENVIRONINDEX, "ident");
+
+  openlog(identcp, option, facility);
+  return 0;
+}
+
+/**
+ *  Generate a log message.
+ *
+ * @function syslog
+ * @tparam int priority Bitwise OR of relevant facility and level `LOG_*` constants.
+ * @tparam string msg The message to log.
+ * @see syslog(3)
+ */
+static int l_syslog(lua_State *L)
+{
+  int priority = luaL_checkint(L, 1);
+  const char *msg = luaL_checkstring(L, 2);
+  syslog(priority, "%s", msg);
+  return 0;
+}
+
+/**
+ * Close the connection being used to write to the system logger.
+ *
+ * @function closelog
+ * @see closelog(3)
+ */
+static int l_closelog(lua_State *L)
+{
+  lua_pushnil(L);
+  lua_setfield(L, LUA_ENVIRONINDEX, "ident");
+  closelog();
+  return 0;
+}
+
 static const luaL_reg s_tch_posix[] =
 {
   { "clock_gettime", l_clock_gettime },
@@ -427,6 +485,9 @@ static const luaL_reg s_tch_posix[] =
   { "dup2",          l_dup2          },
   { "inet_pton",     l_inet_pton     },
   { "statvfs",       l_statvfs       },
+  { "openlog",       l_openlog       },
+  { "syslog",        l_syslog        },
+  { "closelog",      l_closelog      },
   { NULL, NULL }
 };
 
@@ -437,9 +498,46 @@ static const luaL_reg s_tch_posix[] =
  * @field ST_RDONLY Bit in the `f_flag` field of the table returned by `statvfs` indicating a read-only filesystem.
  * @field ST_NOSUID Bit in the `f_flag` field of the table returned by `statvfs` indicating set-user-ID and set-group-ID bits are ignored by `exec(3)`.
  * @field SIGKILL Using `kill`, send signal '9' to process. This is equivalent to shell command 'kill -9'.
- * @field SIGTERM Using `kill`, send signal '15' to process. This is equivalent to shell command `kill`, since SIGTERM is the default signal.
- * @field AF_INET IPv4 address family
- * @field Af_INET6 IPv6 address family
+ * @field SIGTERM Using `kill`, send signal '15' to process. This is equivalent to shell command `kill`, since `SIGTERM` is the default signal.
+ * @field AF_INET IPv4 address family.
+ * @field AF_INET6 IPv6 address family.
+ *
+ * Constants to be used for the `option` argument to `openlog`.
+ *
+ * @field LOG_CONS Write directly to system console if there is an error while sending to system logger.
+ * @field LOG_NDELAY Open the connection immediately (normally, the connection is opened when the first message is logged).
+ * @field LOG_NOWAIT Don't wait for child processes that may have been created while logging the message.
+ * @field LOG_ODELAY The converse of `LOG_NDELAY`; opening of the connection is delayed until syslog() is called.
+ * @field LOG_PERROR Print to stderr as well.
+ * @field LOG_PID Include PID with each message.
+ *
+ * Constants to be used to specify the facility in `openlog` and `syslog`.
+ *
+ * @field LOG_AUTH security/authorization messages
+ * @field LOG_AUTHPRIV security/authorization messages
+ * @field LOG_CRON clock daemon
+ * @field LOG_DAEMON system daemons without separate facility value
+ * @field LOG_FTP ftp daemon
+ * @field LOG_LOCAL0 through `LOG_LOCAL7` reserved for local use
+ * @field LOG_LPR line printer subsystem
+ * @field LOG_MAIL mail subsystem
+ * @field LOG_NEWS USENET news subsystem
+ * @field LOG_SYSLOG messages generated internally by syslogd()
+ * @field LOG_USER (default) generic user-level messages
+ * @field LOG_UUCP UUCP subsystem
+ *
+ *
+ * Constants to be used to specify the log level in \syslog`.`
+ *
+ * @field LOG_EMERG system is unusable
+ * @field LOG_ALERT action must be taken immediately
+ * @field LOG_CRIT critical conditions
+ * @field LOG_ERR error conditions
+ * @field LOG_WARNING warning conditions
+ * @field LOG_NOTICE normal, but significant, condition
+ * @field LOG_INFO informational message
+ * @field LOG_DEBUG debug-level message
+ *
  * @table tch.posix
  */
 static const ConstantEntry s_constants[] =
@@ -456,12 +554,55 @@ static const ConstantEntry s_constants[] =
 
   CONSTANT(AF_INET),
   CONSTANT(AF_INET6),
+
+  // syslog options
+  CONSTANT(LOG_CONS),
+  CONSTANT(LOG_NDELAY),
+  CONSTANT(LOG_NOWAIT),
+  CONSTANT(LOG_ODELAY),
+  CONSTANT(LOG_PERROR),
+  CONSTANT(LOG_PID),
+
+  // syslog facilities
+  CONSTANT(LOG_AUTH),
+  CONSTANT(LOG_AUTHPRIV),
+  CONSTANT(LOG_CRON),
+  CONSTANT(LOG_DAEMON),
+  CONSTANT(LOG_FTP),
+  CONSTANT(LOG_LOCAL0),
+  CONSTANT(LOG_LOCAL1),
+  CONSTANT(LOG_LOCAL2),
+  CONSTANT(LOG_LOCAL3),
+  CONSTANT(LOG_LOCAL4),
+  CONSTANT(LOG_LOCAL5),
+  CONSTANT(LOG_LOCAL6),
+  CONSTANT(LOG_LOCAL7),
+  CONSTANT(LOG_LPR),
+  CONSTANT(LOG_MAIL),
+  CONSTANT(LOG_NEWS),
+  CONSTANT(LOG_SYSLOG),
+  CONSTANT(LOG_USER),
+  CONSTANT(LOG_UUCP),
+
+  // syslog priorities
+  CONSTANT(LOG_EMERG),
+  CONSTANT(LOG_ALERT),
+  CONSTANT(LOG_CRIT),
+  CONSTANT(LOG_ERR),
+  CONSTANT(LOG_WARNING),
+  CONSTANT(LOG_NOTICE),
+  CONSTANT(LOG_INFO),
+  CONSTANT(LOG_DEBUG),
   { NULL, 0 }
 };
 
 int luaopen_tch_posix(lua_State *L)
 {
   const ConstantEntry *c;
+
+  // create a module environment to keep the ident string
+  lua_newtable(L);
+  lua_replace(L, LUA_ENVIRONINDEX);
 
   lua_createtable(L, 0, ELEMS(s_tch_posix) + ELEMS(s_constants));
   luaL_register(L, NULL, s_tch_posix);
