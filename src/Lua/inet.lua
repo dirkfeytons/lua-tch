@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2016 Technicolor Delivery Technologies, SAS
+Copyright (c) 2016-2017 Technicolor Delivery Technologies, SAS
 
 The source code form of this lua-tch component is subject
 to the terms of the Clear BSD license.
