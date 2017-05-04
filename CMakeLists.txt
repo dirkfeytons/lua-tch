@@ -10,7 +10,7 @@ find_package(LIBLUA REQUIRED)
 find_package(LIBUUID REQUIRED)
 find_package(OpenSSL REQUIRED)
 
-add_definitions(-Os -Wall -Wextra -Werror -std=gnu99 -D_GNU_SOURCE)
+add_definitions(-Wall -Wextra -Werror -std=gnu99 -D_GNU_SOURCE)
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
 
 set(SOURCES

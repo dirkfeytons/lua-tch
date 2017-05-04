@@ -17,6 +17,8 @@
  * @usage
  *   local digest = require("tch.crypto.digest")
  *   local hmac = digest.hmac(digest.SHA256, "key", "data")
+ *   local sig_OK = digest.verify(digest.SHA256, "pubkey.pem",
+ *                                "signature.sig", "checksums")
  */
 
 #include <stdio.h>
@@ -24,6 +26,13 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include <openssl/hmac.h>
+#include <openssl/pem.h>
+#include <openssl/evp.h>
+#include <openssl/err.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "common.h"
 
 #define CRYPTO_DIGEST_MT "tch.crypto.digest"
@@ -62,6 +71,7 @@ static const EVP_MD *digest_enum_to_EVP_MD(digest_t alg)
  * @string key The key to use.
  * @string data The data over which to calculate the MAC.
  * @treturn string The calculated MAC in hexstring format.
+ * @error Error message.
  */
 static int hmac(lua_State *L)
 {
@@ -97,6 +107,135 @@ static int hmac(lua_State *L)
 }
 
 /**
+ * Verify the signature for the given algorithm, public key and
+ * data using the given digest algorithm.
+ * @function verify
+ * @int digest One of the `TCH_DIGEST_*` constants indicating the digest (hash) algorithm to use.
+ * @string pubkey_file Location of the file containing the public key in PEM format.
+ * @string signature_file Location of the file containing the signature.
+ * @string data_file Location of the file containing the data to verify.
+ * @treturn boolean True if verification succeeded.
+ * @error Error message.
+ */
+static int verify(lua_State *L)
+{
+  const EVP_MD *md = NULL;
+  digest_t digest = luaL_checkint(L, 1);
+  const char *pubkeyfile = luaL_checkstring(L, 2);
+  const char *sigfile = luaL_checkstring(L, 3);
+  const char *datafile = luaL_checkstring(L, 4);
+  const char *errmsg = NULL;
+  EVP_MD_CTX *mdctx = NULL;
+  FILE *pubkey_fp = NULL;
+  EVP_PKEY *pubkey = NULL;
+  int sig_fd = -1;
+  struct stat sigfile_stat;
+  unsigned char *sig_data = NULL;
+  int data_fd = -1;
+  int verification = 0;
+
+  ERR_clear_error(); // make sure OpenSSL's error stack is empty
+  md = digest_enum_to_EVP_MD(digest);
+  if (!md)
+    return luaL_error(L, "Invalid digest algorithm %d", digest);
+  // read the public key file
+  pubkey_fp = fopen(pubkeyfile, "r");
+  if (!pubkey_fp)
+  {
+    errmsg = "Failed to open the public key file";
+    goto error;
+  }
+  pubkey = PEM_read_PUBKEY(pubkey_fp, NULL, NULL, NULL);
+  if (!pubkey)
+  {
+    fclose(pubkey_fp);
+    errmsg = "Failed to read public key";
+    goto error;
+  }
+  fclose(pubkey_fp);
+  // read the signature file
+  sig_fd = open(sigfile, O_RDONLY | O_CLOEXEC);
+  if (sig_fd == -1)
+  {
+    errmsg = "Failed to open signature file";
+    goto error;
+  }
+  if (fstat(sig_fd, &sigfile_stat) == -1)
+  {
+    errmsg = "Failed to stat signature file";
+    goto error;
+  }
+  sig_data = malloc(sigfile_stat.st_size);
+  if (!sig_data)
+  {
+    errmsg = "Failed to allocate memory for signature data";
+    goto error;
+  }
+  if (read(sig_fd, sig_data, sigfile_stat.st_size) != sigfile_stat.st_size)
+  {
+    errmsg = "Failed to read signature data";
+    goto error;
+  }
+  // open data file
+  data_fd = open(datafile, O_RDONLY | O_CLOEXEC);
+  if (data_fd == -1)
+  {
+    errmsg = "Failed to open data file";
+    goto error;
+  }
+  // start verification
+  mdctx = EVP_MD_CTX_create();
+  if (!mdctx)
+  {
+    errmsg = "Failed to create a digest context";
+    goto error;
+  }
+  if (EVP_DigestVerifyInit(mdctx, NULL, md, NULL, pubkey) != 1)
+  {
+    errmsg = "Failed to create verification context";
+    goto error;
+  }
+  // read data and feed it to verification context
+  do
+  {
+    char buffer[256];
+    ssize_t data_read = read(data_fd, buffer, sizeof(buffer));
+    if (data_read <= 0)
+      break;
+    if (EVP_DigestVerifyUpdate(mdctx, buffer, data_read) != 1)
+    {
+      errmsg = "Failed to update verification context";
+      goto error;
+    }
+  } while(1);
+  // finalize the verification; 1 means success and any other value indicates failure
+  verification = EVP_DigestVerifyFinal(mdctx, sig_data, sigfile_stat.st_size);
+  if (verification != 1)
+    errmsg = ERR_error_string(ERR_get_error(), NULL);
+
+error:
+  if (mdctx)
+    EVP_MD_CTX_destroy(mdctx);
+  if (data_fd != -1)
+    close(data_fd);
+  free(sig_data);
+  if (pubkey)
+    EVP_PKEY_free(pubkey);
+  if (errmsg)
+  {
+    unsigned long err = ERR_get_error();
+    if (err != 0)
+      errmsg = ERR_error_string(err, NULL);
+    ERR_clear_error();  // be nice and make sure OpenSSL's error stack is empty
+    lua_pushnil(L);
+    lua_pushstring(L, errmsg);
+    return 2;
+  }
+  lua_pushboolean(L, verification);
+  return 1;
+}
+
+/**
  * Supported digest (hash) algorithms.
  * @field SHA256 The SHA256 hash algorithm.
  * @field SHA1 The SHA1 hash algorithm.
@@ -114,8 +253,9 @@ static const ConstantEntry s_constants[] =
 // Public functions for crypto hmac sha256 module
 static const luaL_reg s_crypto_digest_func[] =
 {
-  { "hmac", hmac },
-  { NULL,   NULL }
+  { "hmac",   hmac },
+  { "verify", verify },
+  { NULL,     NULL }
 };
 
 int luaopen_tch_crypto_digest(lua_State *L)
