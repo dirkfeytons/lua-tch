@@ -14,8 +14,10 @@ add_definitions(-Os -Wall -Wextra -Werror -std=gnu99 -D_GNU_SOURCE)
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} --coverage")
 
 set(SOURCES
+  src/C/common.c
   src/C/crypto.c
   src/C/crypto_x509.c
+  src/C/crypto_digest.c
   src/C/posix.c
   src/C/uuid.c
   src/C/xpcall.c
