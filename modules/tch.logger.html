@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Technicolor Lua Modules Documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-tch</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_logger">Class logger </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.crypto.digest.html">tch.crypto.digest</a></li>
+  <li><a href="../modules/tch.crypto.x509.html">tch.crypto.x509</a></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><strong>tch.logger</strong></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
+  <li><a href="../modules/tch.posix.html">tch.posix</a></li>
+  <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
+  <li><a href="../modules/tch.socket.evloop.html">tch.socket.evloop</a></li>
+  <li><a href="../modules/tch.socket.unix.html">tch.socket.unix</a></li>
+  <li><a href="../modules/tch.tableprint.html">tch.tableprint</a></li>
+  <li><a href="../modules/tch.timerfd.html">tch.timerfd</a></li>
+  <li><a href="../modules/tch.uuid.html">tch.uuid</a></li>
+  <li><a href="../modules/tch.xpcall.html">tch.xpcall</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>tch.logger</code></h1>
+<p>Logging module.</p>
+<p>
+
+
+<p> Intended way of using:</p>
+
+<ul>
+    <li>Load it using require():
+
+<pre>
+<span class="keyword">local</span> logger = <span class="global">require</span>(<span class="string">"tch.logger"</span>)
+</pre>
+</li>
+    <li>Initialize using <a href="../modules/tch.logger.html#init">logger.init</a>. Pass the name of your module,
+the desired global log level (1 to 6), syslog options of interest
+and default syslog facility.
+
+<pre>
+<span class="keyword">local</span> posix = <span class="global">require</span>(<span class="string">"tch.posix"</span>)
+logger.init(<span class="string">"mymodule"</span>, <span class="number">3</span>, posix.LOG_PID + posix.LOG_CONS, posix.LOG_USER)
+</pre>
+</li>
+    <li>Create zero or more logging objects for different parts of your application
+where each object can optionally have its own name and log level. On that
+object you have a log function for each log level and a function to change
+the log level. You can also clear the specific log level and fall back to
+the global log level.
+
+<pre>
+<span class="keyword">local</span> log = logger.new(<span class="string">"mymodule"</span>, <span class="number">2</span>)
+log:critical(<span class="string">"%s:%d"</span>, <span class="string">"oops"</span>, <span class="number">42</span>)
+log:<span class="global">error</span>(....)
+log:warning(....)
+log:notice(....)
+log:info(....)
+log:<span class="global">debug</span>(....)
+log:set_log_level(<span class="number">4</span>)
+</pre>
+</li>
+    <li>Use the methods on the global logging object to send log output. The
+global logging object is the module itself.
+
+<pre>
+logger:critical(....)
+logger:<span class="global">error</span>(....)
+</pre>
+</li>
+</ul>
+</p>
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/tch.posix.html#">tch.posix</a>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#init">init(name, log_level[, syslog_options=0[, syslog_facility=tch.posix.LOG_DAEMON]])</a></td>
+	<td class="summary">Initialize the logger module.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#new">new(modname, log_level)</a></td>
+	<td class="summary">Create a new logger object with its own log level and optionally a name.</td>
+	</tr>
+</table>
+<h2><a href="#Class_logger">Class logger </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#logger:critical">logger:critical(fmt[, ...])</a></td>
+	<td class="summary">Log a critical message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#logger:debug">logger:debug(fmt[, ...])</a></td>
+	<td class="summary">Log a debug message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#logger:error">logger:error(fmt[, ...])</a></td>
+	<td class="summary">Log an error message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#logger:info">logger:info(fmt[, ...])</a></td>
+	<td class="summary">Log an informational message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#logger:notice">logger:notice(fmt[, ...])</a></td>
+	<td class="summary">Log a notice message.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#logger:set_log_level">logger:set_log_level(log_level)</a></td>
+	<td class="summary">Change or clear the log level of this logger.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#logger:warning">logger:warning(fmt[, ...])</a></td>
+	<td class="summary">Log a warning message.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "init"></a>
+    <strong>init(name, log_level[, syslog_options=0[, syslog_facility=tch.posix.LOG_DAEMON]])</strong>
+    </dt>
+    <dd>
+    Initialize the logger module.
+ This isn't strictly necessary but it allows you configure a name
+   that is prepended to every log message, a different default log level,
+   additional syslog options or a different default syslog facility.
+   The function may be called multiple times.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         This name will be prepended to every log message,
+   including those generated using logger objects created with <a href="../modules/tch.logger.html#new">new</a>.
+        </li>
+        <li><span class="parameter">log_level</span>
+            <span class="types"><span class="type">int</span></span>
+         The global log level as a number from 1 to 6.
+   1 is the most important level, 6 the least. A level outside
+   this range will be ignored and the default level (3) will be used.
+        </li>
+        <li><span class="parameter">syslog_options</span>
+            <span class="types"><span class="type">int</span></span>
+         Bitwise OR of syslog option constants.
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">syslog_facility</span>
+            <span class="types"><span class="type">int</span></span>
+         Syslog facility to use.
+         (<em>default</em> tch.posix.LOG_DAEMON)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/3/openlog">openlog(3)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "new"></a>
+    <strong>new(modname, log_level)</strong>
+    </dt>
+    <dd>
+    Create a new logger object with its own log level and optionally a name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">modname</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Optional name of the module using the logger. It will
+   be added to each log message, if present. This name is in addition
+   to the global name set in <a href="../modules/tch.logger.html#init">init</a>.
+        </li>
+        <li><span class="parameter">log_level</span>
+            <span class="types"><span class="type">int</span></span>
+         The initial log level. If not given then the
+   global log level will be used.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/tch.logger.html#logger">logger</a></span>
+        The newly created logger instance.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_logger"></a>Class logger </h2>
+
+          <div class="section-description">
+          Logger methods.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "logger:critical"></a>
+    <strong>logger:critical(fmt[, ...])</strong>
+    </dt>
+    <dd>
+    Log a critical message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fmt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Format of the log message of critical severity.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments of the format string, if any.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="https://www.lua.org/manual/5.1/manual.html#pdf-string.format">string.format</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "logger:debug"></a>
+    <strong>logger:debug(fmt[, ...])</strong>
+    </dt>
+    <dd>
+    Log a debug message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fmt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Format of the log message of debug severity.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments of the format string, if any.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="https://www.lua.org/manual/5.1/manual.html#pdf-string.format">string.format</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "logger:error"></a>
+    <strong>logger:error(fmt[, ...])</strong>
+    </dt>
+    <dd>
+    Log an error message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fmt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Format of the log message of error severity.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments of the format string, if any.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="https://www.lua.org/manual/5.1/manual.html#pdf-string.format">string.format</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "logger:info"></a>
+    <strong>logger:info(fmt[, ...])</strong>
+    </dt>
+    <dd>
+    Log an informational message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fmt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Format of the log message of info severity.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments of the format string, if any.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="https://www.lua.org/manual/5.1/manual.html#pdf-string.format">string.format</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "logger:notice"></a>
+    <strong>logger:notice(fmt[, ...])</strong>
+    </dt>
+    <dd>
+    Log a notice message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fmt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Format of the log message of notice severity.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments of the format string, if any.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="https://www.lua.org/manual/5.1/manual.html#pdf-string.format">string.format</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "logger:set_log_level"></a>
+    <strong>logger:set_log_level(log_level)</strong>
+    </dt>
+    <dd>
+    Change or clear the log level of this logger.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">log_level</span>
+            <span class="types"><span class="type">int</span></span>
+         The new log level. It must be a number from 1 to 6.
+   A level outside this range will be ignored.
+   Pass <code>nil</code> to clear this logger's specific log level
+   and use the global log level.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "logger:warning"></a>
+    <strong>logger:warning(fmt[, ...])</strong>
+    </dt>
+    <dd>
+    Log a warning message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fmt</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Format of the log message of warning severity.
+        </li>
+        <li><span class="parameter">...</span>
+         Arguments of the format string, if any.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="https://www.lua.org/manual/5.1/manual.html#pdf-string.format">string.format</a>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
+<i style="float:right;">Last updated 2017-05-04 22:24:31 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

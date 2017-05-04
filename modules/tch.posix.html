@@ -40,7 +40,10 @@
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
+  <li><a href="../modules/tch.crypto.digest.html">tch.crypto.digest</a></li>
+  <li><a href="../modules/tch.crypto.x509.html">tch.crypto.x509</a></li>
   <li><a href="../modules/tch.inet.html">tch.inet</a></li>
+  <li><a href="../modules/tch.logger.html">tch.logger</a></li>
   <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
   <li><strong>tch.posix</strong></li>
   <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
@@ -74,6 +77,10 @@
 	<td class="summary">Retrieve time using the given clock ID.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#closelog">closelog()</a></td>
+	<td class="summary">Close the connection being used to write to the system logger.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#dup2">dup2(oldfd, newfd)</a></td>
 	<td class="summary">Duplicates the old file descriptor into the new file descriptor.</td>
 	</tr>
@@ -102,12 +109,20 @@
 	<td class="summary">Send signal to a process.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#openlog">openlog(ident, option, facility)</a></td>
+	<td class="summary">Open a connection to the system logger for a program.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#statvfs">statvfs(path)</a></td>
 	<td class="summary">Retrieve statistics of the mounted file system on which the given path resides.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#sysconf">sysconf(int)</a></td>
 	<td class="summary">Get configuration information at runtime.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#syslog">syslog(priority, msg)</a></td>
+	<td class="summary">Generate a log message.</td>
 	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
@@ -204,6 +219,24 @@
     <ul>
          <li><a href="../modules/tch.posix.html#clock_elapsed">clock_elapsed</a></li>
          <li><a href="http://linux.die.net/man/2/clock_gettime">clock_gettime(2)</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "closelog"></a>
+    <strong>closelog()</strong>
+    </dt>
+    <dd>
+    Close the connection being used to write to the system logger.
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/3/closelog">closelog(3)</a>
     </ul>
 
 
@@ -406,11 +439,11 @@
     <ul>
         <li><span class="parameter">af</span>
             <span class="types"><span class="type">int</span></span>
-         The address family, either AF<em>INET or AF</em>INET6
+         The address family, either <code>AF_INET</code> or <code>AF_INET6</code>.
         </li>
         <li><span class="parameter">src</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         The IP address string to convert
+         The IP address string to convert.
         </li>
     </ul>
 
@@ -418,7 +451,7 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        the binary representation of the given address
+        The binary representation of the given address.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -429,7 +462,7 @@
 </li>
         <li>
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        error message</li>
+        Error message.</li>
     </ol>
 
 
@@ -456,7 +489,7 @@
         </li>
         <li><span class="parameter">sig</span>
             <span class="types"><span class="type">int</span></span>
-         The signal to send to process: SIGTERM, SIGKILL or 0 to check if process exists.
+         The signal to send to process: <code>SIGTERM</code>, <code>SIGKILL</code> or '0' to check if process exists.
         </li>
     </ul>
 
@@ -464,7 +497,7 @@
     <ol>
 
            <span class="types"><span class="type">number</span></span>
-        The return value of kill() or nil otherwise.
+        The return value of <code>kill()</code> or nil otherwise.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -482,6 +515,39 @@
     <h3>See also:</h3>
     <ul>
          <a href="http://linux.die.net/man/2/kill">kill(2)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "openlog"></a>
+    <strong>openlog(ident, option, facility)</strong>
+    </dt>
+    <dd>
+    Open a connection to the system logger for a program.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">ident</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Represent the program name.
+        </li>
+        <li><span class="parameter">option</span>
+            <span class="types"><span class="type">int</span></span>
+         Bitwise OR of the applicable <code>LOG_*</code> constants to control the operation of this function and subsequent calls to <a href="../modules/tch.posix.html#syslog">syslog</a>.
+        </li>
+        <li><span class="parameter">facility</span>
+            <span class="types"><span class="type">int</span></span>
+         One of the applicable <code>LOG_*</code> constants which will be the default facility when none is specified in subsequent calls to <a href="../modules/tch.posix.html#syslog">syslog</a>.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/3/openlog">openlog(3)</a>
     </ul>
 
 
@@ -530,7 +596,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">int</span>
-         any valid sysconf value is accepted but only <em>SC</em>CLK_TCK is exported by the module.
+         Any valid sysconf value is accepted but only <code>_SC_CLK_TCK</code> is exported by the module.
         </li>
     </ul>
 
@@ -538,13 +604,42 @@
     <ol>
 
            <span class="types"><span class="type">int</span></span>
-        associated system configuration value
+        Associated system configuration value.
     </ol>
 
 
     <h3>See also:</h3>
     <ul>
          <a href="http://linux.die.net/man/3/sysconf">sysconf(3)</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "syslog"></a>
+    <strong>syslog(priority, msg)</strong>
+    </dt>
+    <dd>
+    Generate a log message.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">priority</span>
+            <span class="types"><span class="type">int</span></span>
+         Bitwise OR of relevant facility and level <code>LOG_*</code> constants.
+        </li>
+        <li><span class="parameter">msg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The message to log.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="http://linux.die.net/man/3/syslog">syslog(3)</a>
     </ul>
 
 
@@ -579,13 +674,98 @@
          Using <a href="../modules/tch.posix.html#kill">kill</a>, send signal '9' to process. This is equivalent to shell command 'kill -9'.
         </li>
         <li><span class="parameter">SIGTERM</span>
-         Using <a href="../modules/tch.posix.html#kill">kill</a>, send signal '15' to process. This is equivalent to shell command <a href="../modules/tch.posix.html#kill">kill</a>, since SIGTERM is the default signal.
+         Using <a href="../modules/tch.posix.html#kill">kill</a>, send signal '15' to process. This is equivalent to shell command <a href="../modules/tch.posix.html#kill">kill</a>, since <code>SIGTERM</code> is the default signal.
         </li>
         <li><span class="parameter">AF_INET</span>
-         IPv4 address family
+         IPv4 address family.
         </li>
-        <li><span class="parameter">Af_INET6</span>
-         IPv6 address family
+        <li><span class="parameter">AF_INET6</span>
+         IPv6 address family.</p>
+
+<p> Constants to be used for the <code>option</code> argument to <a href="../modules/tch.posix.html#openlog">openlog</a>.
+        </li>
+        <li><span class="parameter">LOG_CONS</span>
+         Write directly to system console if there is an error while sending to system logger.
+        </li>
+        <li><span class="parameter">LOG_NDELAY</span>
+         Open the connection immediately (normally, the connection is opened when the first message is logged).
+        </li>
+        <li><span class="parameter">LOG_NOWAIT</span>
+         Don't wait for child processes that may have been created while logging the message.
+        </li>
+        <li><span class="parameter">LOG_ODELAY</span>
+         The converse of <code>LOG_NDELAY</code>; opening of the connection is delayed until syslog() is called.
+        </li>
+        <li><span class="parameter">LOG_PERROR</span>
+         Print to stderr as well.
+        </li>
+        <li><span class="parameter">LOG_PID</span>
+         Include PID with each message.</p>
+
+<p> Constants to be used to specify the facility in <a href="../modules/tch.posix.html#openlog">openlog</a> and <a href="../modules/tch.posix.html#syslog">syslog</a>.
+        </li>
+        <li><span class="parameter">LOG_AUTH</span>
+         security/authorization messages
+        </li>
+        <li><span class="parameter">LOG_AUTHPRIV</span>
+         security/authorization messages
+        </li>
+        <li><span class="parameter">LOG_CRON</span>
+         clock daemon
+        </li>
+        <li><span class="parameter">LOG_DAEMON</span>
+         system daemons without separate facility value
+        </li>
+        <li><span class="parameter">LOG_FTP</span>
+         ftp daemon
+        </li>
+        <li><span class="parameter">LOG_LOCAL0</span>
+         through <code>LOG_LOCAL7</code> reserved for local use
+        </li>
+        <li><span class="parameter">LOG_LPR</span>
+         line printer subsystem
+        </li>
+        <li><span class="parameter">LOG_MAIL</span>
+         mail subsystem
+        </li>
+        <li><span class="parameter">LOG_NEWS</span>
+         USENET news subsystem
+        </li>
+        <li><span class="parameter">LOG_SYSLOG</span>
+         messages generated internally by syslogd()
+        </li>
+        <li><span class="parameter">LOG_USER</span>
+         (default) generic user-level messages
+        </li>
+        <li><span class="parameter">LOG_UUCP</span>
+         UUCP subsystem</p>
+
+
+<p> Constants to be used to specify the log level in \syslog<code>.</code>
+        </li>
+        <li><span class="parameter">LOG_EMERG</span>
+         system is unusable
+        </li>
+        <li><span class="parameter">LOG_ALERT</span>
+         action must be taken immediately
+        </li>
+        <li><span class="parameter">LOG_CRIT</span>
+         critical conditions
+        </li>
+        <li><span class="parameter">LOG_ERR</span>
+         error conditions
+        </li>
+        <li><span class="parameter">LOG_WARNING</span>
+         warning conditions
+        </li>
+        <li><span class="parameter">LOG_NOTICE</span>
+         normal, but significant, condition
+        </li>
+        <li><span class="parameter">LOG_INFO</span>
+         informational message
+        </li>
+        <li><span class="parameter">LOG_DEBUG</span>
+         debug-level message
         </li>
     </ul>
 
@@ -601,7 +781,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.5</a></i>
-<i style="float:right;">Last updated 2016-10-27 16:24:06 </i>
+<i style="float:right;">Last updated 2017-05-04 22:24:31 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

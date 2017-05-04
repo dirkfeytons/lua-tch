@@ -33,15 +33,16 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="nowrap">
   <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
-  <li><a href="../modules/tch.crypto.digest.html">tch.crypto.digest</a></li>
+  <li><strong>tch.crypto.digest</strong></li>
   <li><a href="../modules/tch.crypto.x509.html">tch.crypto.x509</a></li>
-  <li><strong>tch.inet</strong></li>
+  <li><a href="../modules/tch.inet.html">tch.inet</a></li>
   <li><a href="../modules/tch.logger.html">tch.logger</a></li>
   <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
   <li><a href="../modules/tch.posix.html">tch.posix</a></li>
@@ -58,31 +59,38 @@
 
 <div id="content">
 
-<h1>Module <code>tch.inet</code></h1>
-<p>Common IP address functions.</p>
+<h1>Module <code>tch.crypto.digest</code></h1>
+<p>Lua C module exposing digest functions.</p>
 <p>
 
 </p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local digest = require(&quot;tch.crypto.digest&quot;)
+local hmac = digest.hmac(digest.SHA256, &quot;key&quot;, &quot;data&quot;)
+local sig_OK = digest.verify(digest.SHA256, &quot;pubkey.pem&quot;,
+                             &quot;signature.sig&quot;, &quot;checksums&quot;)
+</pre>
+    </ul>
 
 
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#hexIPv4ToString">hexIPv4ToString(hexip)</a></td>
-	<td class="summary">Convert the given hexadecimal IPv4 address string to
- dotted decimal notation.</td>
+	<td class="name" nowrap><a href="#hmac">hmac(digest, key, data)</a></td>
+	<td class="summary">Calculate a message authentication code (MAC) for the given data using a keyed hash function.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#isValidIP">isValidIP(ip)</a></td>
-	<td class="summary">Check if the given address is a valid IP address.</td>
+	<td class="name" nowrap><a href="#verify">verify(digest, pubkey_file, signature_file, data_file)</a></td>
+	<td class="summary">Verify the signature for the given algorithm, public key and
+ data using the given digest algorithm.</td>
 	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#isValidIPv4">isValidIPv4(ip)</a></td>
-	<td class="summary">Check if the given address is a valid IPv4 address.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#isValidIPv6">isValidIPv6(ip)</a></td>
-	<td class="summary">Check if the given address is a valid IPv6 address.</td>
+	<td class="name" nowrap><a href="#tch.crypto.digest">tch.crypto.digest</a></td>
+	<td class="summary">Supported digest (hash) algorithms.</td>
 	</tr>
 </table>
 
@@ -94,20 +102,26 @@
 
     <dl class="function">
     <dt>
-    <a name = "hexIPv4ToString"></a>
-    <strong>hexIPv4ToString(hexip)</strong>
+    <a name = "hmac"></a>
+    <strong>hmac(digest, key, data)</strong>
     </dt>
     <dd>
-    Convert the given hexadecimal IPv4 address string to
- dotted decimal notation.  The string may have leading or
- trailing whitespace.
+    Calculate a message authentication code (MAC) for the given data using a keyed hash function.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">hexip</span>
+        <li><span class="parameter">digest</span>
+            <span class="types"><span class="type">int</span></span>
+         One of the <code>TCH_DIGEST_*</code> constants indicating the digest (hash) algorithm to use.
+        </li>
+        <li><span class="parameter">key</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         The hexadecimal IPv4 address to be converted.
+         The key to use.
+        </li>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The data over which to calculate the MAC.
         </li>
     </ul>
 
@@ -115,7 +129,7 @@
     <ol>
 
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        The IPv4 address in dotted decimal notation.
+        The calculated MAC in hexstring format.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -134,57 +148,31 @@
 
 </dd>
     <dt>
-    <a name = "isValidIP"></a>
-    <strong>isValidIP(ip)</strong>
+    <a name = "verify"></a>
+    <strong>verify(digest, pubkey_file, signature_file, data_file)</strong>
     </dt>
     <dd>
-    Check if the given address is a valid IP address.
+    Verify the signature for the given algorithm, public key and
+ data using the given digest algorithm.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">ip</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         The IP address to test.
+        <li><span class="parameter">digest</span>
+            <span class="types"><span class="type">int</span></span>
+         One of the <code>TCH_DIGEST_*</code> constants indicating the digest (hash) algorithm to use.
         </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        "IPv4" if <code>ip</code> is a valid IPv4 address or "IPv6" if
-   <code>ip</code> is a valid IPv6 address.
-    </ol>
-     <h3>Or</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">nil</span></span>
-
-
-</li>
-        <li>
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        Error message.</li>
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "isValidIPv4"></a>
-    <strong>isValidIPv4(ip)</strong>
-    </dt>
-    <dd>
-    Check if the given address is a valid IPv4 address.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">ip</span>
+        <li><span class="parameter">pubkey_file</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         The IP address string to test.
+         Location of the file containing the public key in PEM format.
+        </li>
+        <li><span class="parameter">signature_file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Location of the file containing the signature.
+        </li>
+        <li><span class="parameter">data_file</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         Location of the file containing the data to verify.
         </li>
     </ul>
 
@@ -192,7 +180,7 @@
     <ol>
 
            <span class="types"><span class="type">boolean</span></span>
-        True if it is a valid IPv4 address.
+        True if verification succeeded.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -210,39 +198,31 @@
 
 
 </dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
     <dt>
-    <a name = "isValidIPv6"></a>
-    <strong>isValidIPv6(ip)</strong>
+    <a name = "tch.crypto.digest"></a>
+    <strong>tch.crypto.digest</strong>
     </dt>
     <dd>
-    Check if the given address is a valid IPv6 address.
+    Supported digest (hash) algorithms.
 
 
-    <h3>Parameters:</h3>
+    <h3>Fields:</h3>
     <ul>
-        <li><span class="parameter">ip</span>
-            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         The IP address string to test.
+        <li><span class="parameter">SHA256</span>
+         The SHA256 hash algorithm.
+        </li>
+        <li><span class="parameter">SHA1</span>
+         The SHA1 hash algorithm.
+        </li>
+        <li><span class="parameter">MD5</span>
+         The MD5 hash algorithm.
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><span class="type">boolean</span></span>
-        True if it is a valid IPv6 address.
-    </ol>
-     <h3>Or</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">nil</span></span>
-
-
-</li>
-        <li>
-           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        Error message.</li>
-    </ol>
 
 
 

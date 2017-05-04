@@ -33,6 +33,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_cert">Class cert </a></li>
 </ul>
 
 
@@ -40,10 +41,10 @@
 <ul class="nowrap">
   <li><a href="../modules/tch.crypto.html">tch.crypto</a></li>
   <li><a href="../modules/tch.crypto.digest.html">tch.crypto.digest</a></li>
-  <li><a href="../modules/tch.crypto.x509.html">tch.crypto.x509</a></li>
+  <li><strong>tch.crypto.x509</strong></li>
   <li><a href="../modules/tch.inet.html">tch.inet</a></li>
   <li><a href="../modules/tch.logger.html">tch.logger</a></li>
-  <li><strong>tch.netlink</strong></li>
+  <li><a href="../modules/tch.netlink.html">tch.netlink</a></li>
   <li><a href="../modules/tch.posix.html">tch.posix</a></li>
   <li><a href="../modules/tch.profiling.html">tch.profiling</a></li>
   <li><a href="../modules/tch.socket.evloop.html">tch.socket.evloop</a></li>
@@ -58,22 +59,18 @@
 
 <div id="content">
 
-<h1>Module <code>tch.netlink</code></h1>
-<p>Binding to receive netlink messages from the kernel.</p>
-<p> This module registers a lua callback function that will be called
- on interface state changes broadcast from the kernel via netlink.
- The module uses the uloop event loop to process the activity on
- the netlink socket.</p>
+<h1>Module <code>tch.crypto.x509</code></h1>
+<p>Lua C module exposing X.509 certificates.</p>
+<p>
+
+</p>
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">local uloop = require(&quot;uloop&quot;)
-local netlink=require(&quot;tch.netlink&quot;)
-local nl,err = netlink.listen(function(dev,state) ... end)
-
-local netlink.remove_neigh(&quot;192.168.1.254&quot;, &quot;48:51:21:18:fd:8d&quot;, &quot;eth0&quot;)
-
-...
-uloop.run()
+        <pre class="example">Example code:
+  local x509 = require(&quot;tch.crypto.x509&quot;)
+  local cert = x509.new_from_string(string_data)
+  local shash = cert:subject_hash()
+  cert:free()
 </pre>
     </ul>
 
@@ -81,12 +78,19 @@ uloop.run()
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#listen">listen(cb)</a></td>
-	<td class="summary">Create a new netlink object.</td>
+	<td class="name" nowrap><a href="#new_from_string">new_from_string(certificate_data)</a></td>
+	<td class="summary">Create a new X.509 certificate object from a string.</td>
+	</tr>
+</table>
+<h2><a href="#Class_cert">Class cert </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#cert:free">cert:free()</a></td>
+	<td class="summary">Free the X.509 certificate.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#remove_neigh">remove_neigh(ip, mac, dev)</a></td>
-	<td class="summary">Remove the neighbour entry.</td>
+	<td class="name" nowrap><a href="#cert:subject_hash">cert:subject_hash()</a></td>
+	<td class="summary">Subject hash from certificate.</td>
 	</tr>
 </table>
 
@@ -98,25 +102,26 @@ uloop.run()
 
     <dl class="function">
     <dt>
-    <a name = "listen"></a>
-    <strong>listen(cb)</strong>
+    <a name = "new_from_string"></a>
+    <strong>new_from_string(certificate_data)</strong>
     </dt>
     <dd>
-    Create a new netlink object.
+    Create a new X.509 certificate object from a string.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">cb</span>
-         callback function(dev,state) called with device name and state
+        <li><span class="parameter">certificate_data</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         String data containing the certificate info in PEM format.
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">netlink</span></span>
-        The newly created object.
+           <span class="types"><a class="type" href="../modules/tch.crypto.x509.html#cert">cert</a></span>
+        The newly created X.509 object from the given string.
     </ol>
      <h3>Or</h3>
     <ol>
@@ -134,43 +139,43 @@ uloop.run()
 
 
 </dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_cert"></a>Class cert </h2>
+
+          <div class="section-description">
+          X.509 methods.
+          </div>
+    <dl class="function">
     <dt>
-    <a name = "remove_neigh"></a>
-    <strong>remove_neigh(ip, mac, dev)</strong>
+    <a name = "cert:free"></a>
+    <strong>cert:free()</strong>
     </dt>
     <dd>
-    Remove the neighbour entry.
+    Free the X.509 certificate.
+ It's not an error to free an object more than once. Calling methods on a freed certificate will result in errors.
 
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">ip</span>
-         the IP address of the neighbour
-        </li>
-        <li><span class="parameter">mac</span>
-         the MAC address of the neighbour
-        </li>
-        <li><span class="parameter">dev</span>
-         the interface where the neighbour was discovered
-        </li>
-    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "cert:subject_hash"></a>
+    <strong>cert:subject_hash()</strong>
+    </dt>
+    <dd>
+    Subject hash from certificate.
+ Calculate the hash in hexadecimal notation of the subject of this certificate.
+
+
 
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">boolean</span></span>
-        true
-    </ol>
-     <h3>Or</h3>
-    <ol>
-        <li>
-           <span class="types"><span class="type">nil</span></span>
-
-
-</li>
-        <li>
            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-        Error message.</li>
+        The hexadecimal representation of the hash of the subject.
     </ol>
 
 
