@@ -50,6 +50,21 @@ function M.isValidIPv6(ip)
   return nil, err
 end
 
+--- Check if the given address is a valid IP address.
+-- @tparam string ip The IP address to test.
+-- @treturn string "IPv4" if `ip` is a valid IPv4 address or "IPv6" if
+--   `ip` is a valid IPv6 address.
+-- @error Error message.
+function M.isValidIP(ip)
+  if M.isValidIPv4(ip) then
+    return "IPv4"
+  end
+  if M.isValidIPv6(ip) then
+    return "IPv6"
+  end
+  return nil, "not a valid IP address (v4 nor v6)"
+end
+
 --- Convert the given hexadecimal IPv4 address string to
 -- dotted decimal notation. The string may have leading or
 -- trailing whitespace.
