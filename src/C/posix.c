@@ -416,6 +416,28 @@ static int l_inet_pton(lua_State *L)
 }
 
 /**
+ * Close the connection being used to write to the system logger.
+ *
+ * @function closelog
+ * @see closelog(3)
+ */
+static int l_closelog(lua_State *L)
+{
+  closelog();
+  // The stored ident string can be unanchored now but the metatable with __gc must be removed to avoid this function being called again later when the ident string is actually GC'd.
+  // That would potentially undo a more recent call to openlog() leading to unexpected log message format.
+  lua_getfield(L, LUA_ENVIRONINDEX, "ident");
+  if (!lua_isnil(L, -1))
+  {
+    lua_pushnil(L);
+    lua_setmetatable(L, -2);
+    lua_pushnil(L);
+    lua_setfield(L, LUA_ENVIRONINDEX, "ident");
+  }
+  return 0;
+}
+
+/**
  * Open a connection to the system logger for a program.
  *
  * @function openlog
@@ -432,9 +454,16 @@ static int l_openlog(lua_State *L)
   int option = luaL_checkint(L, 2);
   int facility = luaL_checkint(L, 3);
 
+  // Before storing a (new) ident string make sure the old one is fully cleaned up.
+  // We don't want the GC to kick in later and mess with the ident string that is in use at that moment.
+  l_closelog(L);
+
   char *identcp = lua_newuserdata(L, len + 1);
   strcpy(identcp, ident);
-  // store it in our environment table, so that it is not garbage collected
+  lua_createtable(L, 0, 1);
+  lua_pushcfunction(L, l_closelog);
+  lua_setfield(L, -2, "__gc");
+  lua_setmetatable(L, -2);
   lua_setfield(L, LUA_ENVIRONINDEX, "ident");
 
   openlog(identcp, option, facility);
@@ -454,20 +483,6 @@ static int l_syslog(lua_State *L)
   int priority = luaL_checkint(L, 1);
   const char *msg = luaL_checkstring(L, 2);
   syslog(priority, "%s", msg);
-  return 0;
-}
-
-/**
- * Close the connection being used to write to the system logger.
- *
- * @function closelog
- * @see closelog(3)
- */
-static int l_closelog(lua_State *L)
-{
-  lua_pushnil(L);
-  lua_setfield(L, LUA_ENVIRONINDEX, "ident");
-  closelog();
   return 0;
 }
 
